@@ -9,32 +9,35 @@ try:
             soup = BeautifulSoup(f, "lxml")
 
         # Create preconnect for google fonts
-        fonts_preconnect = soup.new_tag('link')
-        soup.head.append(fonts_preconnect)
-        fonts_preconnect['rel'] = 'preconnect'
-        fonts_preconnect['href'] = 'https://fonts.gstatic.com'
-        fonts_preconnect['crossorigin'] = None
+        soup.head.append(soup.new_tag('link',
+                                      rel='preconnect',
+                                      href='https://fonts.gstatic.com',
+                                      crossorigin=None))
 
-        link_tag = soup.head.find_all(
-            'link', attrs={'rel': 'stylesheet'}, recursive=False)
-
+        link_tag = soup.head.find_all('link',
+                                      attrs={'rel': 'stylesheet'},
+                                      recursive=False)
         for link in link_tag:
+            hrefs = link.get('href')
+
+            # For fonts add "&display=swap"
+            fonts = ['googleapis']
+            for font in fonts:
+                if font in hrefs:
+                    hrefs = hrefs + "&display=swap"
+
+            # Optimize link tags on header
             link['as'] = 'style'
             link['onload'] = "this.rel = 'stylesheet'"
             link['rel'] = 'preload'
-            # Extract all hrefs from link tags
-            hrefs = link.get('href')
-
-            # PENDING to create conditional for google fonts and add "&display=swap"
+            link['href'] = hrefs
 
             # Create new Tags: noscript & link
             noscript_tag = soup.new_tag('noscript')
-            noscript_link_tag = soup.new_tag('link')
             soup.head.append(noscript_tag)
-            noscript_tag.append(noscript_link_tag)
-            # Add new sub tags to noscripts
-            noscript_link_tag['rel'] = 'stylesheet'
-            noscript_link_tag['href'] = hrefs
+            noscript_tag.append(soup.new_tag('link',
+                                             rel='stylesheet',
+                                             href=hrefs))
 
         script_tag = soup.find_all('script')
 
