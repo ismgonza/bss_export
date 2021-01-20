@@ -11,12 +11,12 @@ source ~/.pyenv/versions/3.7.7/envs/python_tools/bin/activate
 
 echo "run at `date`" >> $logfile
 echo "`which python3`" >> $logfile
-echo /Users/isman/Documents/devproj/tools >> $logfile
+echo /Users/isman/Documents/devproj/tools/bss_export >> $logfile
 echo $1 >> $logfile
 pushd $1
 for f in *.html
 do
-    echo python3 /Users/isman/Documents/devproj/tools/bss_export.py $f >> $logfile 
-    python3 /Users/isman/Documents/devproj/tools/bss_export.py $f 
+    echo python3 /Users/isman/Documents/devproj/tools/bss_export/bss_export.py $f >> $logfile 
+    python3 /Users/isman/Documents/devproj/tools/bss_export/bss_export.py $f 
 done
 popd

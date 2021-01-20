@@ -8,6 +8,13 @@ try:
         with open(file_name, 'r') as f:
             soup = BeautifulSoup(f, "lxml")
 
+        # Create preconnect for google fonts
+        fonts_preconnect = soup.new_tag('link')
+        soup.head.append(fonts_preconnect)
+        fonts_preconnect['rel'] = 'preconnect'
+        fonts_preconnect['href'] = 'https://fonts.gstatic.com'
+        fonts_preconnect['crossorigin'] = None
+
         link_tag = soup.head.find_all(
             'link', attrs={'rel': 'stylesheet'}, recursive=False)
 
@@ -17,6 +24,9 @@ try:
             link['rel'] = 'preload'
             # Extract all hrefs from link tags
             hrefs = link.get('href')
+
+            # PENDING to create conditional for google fonts and add "&display=swap"
+
             # Create new Tags: noscript & link
             noscript_tag = soup.new_tag('noscript')
             noscript_link_tag = soup.new_tag('link')
